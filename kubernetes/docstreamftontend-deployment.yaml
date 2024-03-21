@@ -35,7 +35,7 @@ spec:
               value: "http://api-documenterator-service:8000/"
             # o auth
             - name: REDIRECT_URI
-              value: "https://streamdocs.k8s.datafortress.cloud/"
+              value: "https://streamdocs.k8s.datafortress.cloud"
             - name: OAUTH_BASE_URL
               value: "https://datafortress.auth.eu-central-1.amazoncognito.com/oauth2/"
             - name: CLIENT_ID
