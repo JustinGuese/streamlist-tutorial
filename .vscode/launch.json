@@ -10,7 +10,11 @@
             "module": "streamlit",
             "request": "launch",
             "args": ["run", "${file}"],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "env" : {
+                "OAUTH_BASE_URL": "https://datafortress.auth.eu-central-1.amazoncognito.com/oauth2/"
+            },
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

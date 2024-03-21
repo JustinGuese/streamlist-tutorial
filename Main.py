@@ -55,7 +55,8 @@ if "token" not in st.session_state:
 else:
     st.session_state.user = decodeJWT(st.session_state.token)
     st.session_state["projects"] = load_data(st.session_state.user)
-    st.session_state["current_project"] = 0
+    if "current_project" not in st.session_state:
+        st.session_state["current_project"] = 0
     st.session_state["project_names"] = [
         x["name"] for x in st.session_state["projects"]
     ]
@@ -130,13 +131,34 @@ else:
 
     st.subheader("Upload Documents")
 
-    uploaded_files = st.file_uploader(
-        "upload any documents you want to include in the project",
-        accept_multiple_files=True,
-        type=("ppt", "docx", "doc", "txt", "eml", "pdf"),
-    )
-    if uploaded_files is not None:
-        pass
+    with st.form("doc_upload", clear_on_submit=True):
+        uploaded_files = st.file_uploader(
+            "upload any documents you want to include in the project",
+            accept_multiple_files=True,
+            type=("ppt", "docx", "doc", "txt", "eml", "pdf"),
+        )
+        doc_submit = st.form_submit_button("Upload")
+        if len(uploaded_files) > 0 and doc_submit:
+            files = []
+            for file in uploaded_files:
+                files.append(("upload_files", (file.name, file.getvalue(), file.type)))
+
+            resp = requests.post(
+                BACKEND_URL + "upload/",
+                files=files,
+                params={
+                    "user_id": st.session_state.user,
+                    "project": st.session_state["project_names"][
+                        st.session_state["current_project"]
+                    ],
+                },
+                headers={
+                    # "Content-Type": "multipart/form-data",
+                    "Accept": "application/json",
+                },
+            )
+            resp.raise_for_status()
+            st.info("Upload success!")
 
     st.subheader("Continue your previous chats")
 
