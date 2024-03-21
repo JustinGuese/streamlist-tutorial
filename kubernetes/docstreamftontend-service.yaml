@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -n documenterator
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: docstreamftontend
+  name: docstreamftontend
+  namespace: documenterator
+spec:
+  ports:
+    - name: "8501"
+      port: 8501
+      targetPort: 8501
+  selector:
+    io.kompose.service: docstreamftontend

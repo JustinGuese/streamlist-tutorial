@@ -1,0 +1,1 @@
+an example streamlit app to try out interaction with a backend, as well as AWS cognito authentication 

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -n documenterator
+    kompose.version: 1.32.0 (HEAD)
+  labels:
+    io.kompose.service: docstreamftontend
+  name: docstreamftontend
+  namespace: documenterator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: docstreamftontend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -n documenterator
+        kompose.version: 1.32.0 (HEAD)
+      labels:
+        io.kompose.network/streamlist-tutorial-default: "true"
+        io.kompose.service: docstreamftontend
+    spec:
+      containers:
+        - image: guestros/aidocs-streamlit-frontend:latest
+          imagePullPolicy: Always
+          name: docstreamftontend
+          ports:
+            - containerPort: 8501
+              hostPort: 8501
+              protocol: TCP
+          env:
+            - name: BACKEND_URL
+              value: "http://api-documenterator-service:8000/"
+            # o auth
+            - name: REDIRECT_URI
+              value: "https://streamdocs.k8s.datafortress.cloud/"
+            - name: OAUTH_BASE_URL
+              value: "https://datafortress.auth.eu-central-1.amazoncognito.com/oauth2/"
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CLIENT_ID
+                  name: cognito-secret
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: CLIENT_SECRET
+                  name: cognito-secret
+
+      restartPolicy: Always
